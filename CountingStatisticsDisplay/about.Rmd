@@ -1,0 +1,24 @@
+## Author
+- **Name** Nate Beebe
+- **Email** nbeebe2@illinois.edu
+
+## Purpose
+
+Using this app, users can sort by every single Major League Baseball team and season that team was active to find batting statistics by any player on that team for that year (granted that the player had at least one (1) at-bat). There is a bar chart displaying many counting stats including home runs and runs batted in. There is also a table displayed that can show all results for a team including batting average on on-base plus slugging (this can be shown for all seasons or sorted by a selected season using the check box). Some results are blank because there are some older games where not everything was recorded.
+
+## Data
+
+This data comes from the Lahman library. It has records for many baseball statistics for pitchers, hitters, and teams dating back to 1871 and including 2023 as the most recent year. With this data, users can manipulate the data to include all kinds of statistics that they wish. Users can sort by teams, years, players, and more. The Lahman dataset provides an easy way to have all this information in one place.
+
+## References
+
+- Sean Lahman's Baseball Database (http://www.seanlahman.com/) (or by installing the R package 'Lahman')
+
+- Calculation of OPS (https://www.mlb.com/glossary/standard-stats/on-base-plus-slugging)
+
+- Calculation of SLG (https://www.mlb.com/glossary/standard-stats/slugging-percentage)
+
+- Calcuation of OBP (https://www.mlb.com/glossary/standard-stats/on-base-percentage)
+
+- David Dalpiaz's 385 Project Video (https://www.youtube.com/watch?v=hMnivJn3_3s&list=PLBgxzZMu3GpN71ieY830-PbURbZvKn01b)
+
