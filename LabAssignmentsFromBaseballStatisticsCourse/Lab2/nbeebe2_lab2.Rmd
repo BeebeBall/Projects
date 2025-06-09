@@ -1,0 +1,343 @@
+---
+title: "Lab 2"
+author: "Nate Beebe (Worked with Matthew Raitano and Zack Barnes)"
+date: "Due on 02/21 at 11:59 pm"
+output: pdf_document
+urlcolor: blue
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+**Question 1** The 2014 and 2015 Royals surprised a lot of people when they seemingly came out of nowhere with back-to-back world series including a title in 2015. In this problem and in the next problem we will investigate aspects of weirdness surrounding these Royals teams. See [this Foolish Baseball video](https://www.youtube.com/watch?v=L0bSAGd6_Zk&ab_channel=FoolishBaseball),  [this Keith Law article](https://www.espn.com/blog/keith-law/insider/post/_/id/137), and [this article about the failure of projection systems](https://www.foxsports.com/stories/other/heres-how-the-kansas-city-royals-blew-past-their-2015-projections) for background. In this problem you will construct a relevant data set for analysis with the ultimate goal of describing just how unique these Royals were. Do the following: 
+
+  - Construct a data frame which includes the following variables from the \texttt{Teams} data frame in the \texttt{Lahman} package: \texttt{yearID}, \texttt{teamID}, \texttt{AB}, \texttt{SO}, \texttt{H}, \texttt{HR}, \texttt{R}, \texttt{RA}, \texttt{W}, and \texttt{L}. Only keep seasons dating back to 1990, and remove the 1994, 1995, and 2020 seasons. 
+  
+```{r, warning=FALSE, message=FALSE}
+library(Lahman)
+library(tidyverse)
+Set = Teams %>% 
+  filter(yearID >= 1990) %>% 
+  filter(yearID != 2020) %>% 
+  filter(yearID != 1995) %>% 
+  filter(yearID != 1994) %>%
+  select(yearID, teamID, AB, SO, H, HR, R, RA, W, L, franchID)
+
+Set_Save = Teams %>% 
+  filter(yearID >= 1990) %>% 
+  filter(yearID != 2020) %>% 
+  filter(yearID != 1995) %>% 
+  filter(yearID != 1994) %>% 
+  group_by(yearID)
+head(Set)
+```
+  
+I found it easier to work with "franchID" when merging the data from each season, so that's why it is also included here.
+
+  - Run the code below to scrape data from baseball reference, and only keep seasons dating back to 1990, and remove the 1994, 1995, and 2020 seasons. 
+
+```{r, warning=FALSE, message=FALSE}  
+bwar_bat = readr::read_csv("https://www.baseball-reference.com/data/war_daily_bat.txt", na = "NULL")
+bwar_pit = readr::read_csv("https://www.baseball-reference.com/data/war_daily_pitch.txt", na = "NULL")  
+
+#Only keeping instructed seasons
+bat_war = bwar_bat %>%  
+  filter(year_ID != 2020) %>% 
+  filter(year_ID != 1995) %>% 
+  filter(year_ID != 1994) %>% 
+  filter(year_ID >= 1990)
+pit_war = bwar_pit %>% 
+  filter(year_ID != 2020) %>% 
+  filter(year_ID != 1995) %>% 
+  filter(year_ID != 1994) %>% 
+  filter(year_ID >= 1990)
+```  
+  
+  - Obtain total team defensive WAR \texttt{WAR\_def}, bullpen WAR, and base running runs \texttt{runs\_br} for each year and add these quantities to the data frame that you previously constructed from the \texttt{Teams} data frame. Call these variables, respectively, \texttt{dWAR}, \texttt{penWAR}, \texttt{BRruns}.
+
+```{r, warning=FALSE, message=FALSE}
+D_R_WAR = bat_war %>% 
+  rename(franchID = team_ID) %>% 
+  group_by(year_ID, franchID) %>% 
+  summarise(dWAR = sum(WAR_def, na.rm = T), BRruns = sum(runs_br, na.rm = T)) %>%
+  mutate(franchID = ifelse(franchID == "LAA", "ANA", franchID)) %>% 
+  mutate(franchID = ifelse(franchID == "MON", "WSN", franchID)) %>% 
+  mutate(franchID = ifelse(franchID == "TBR", "TBD", franchID)) %>% 
+  mutate(franchID = ifelse(franchID == "MIA", "FLA", franchID)) %>% 
+  mutate(franchID = ifelse(franchID == "CAL", "ANA", franchID))
+
+
+Pen_WAR = pit_war %>% 
+  rename(franchID = team_ID) %>% 
+  #For this exercise, I am defining a "bullpen pitcher" as someone who has more outs recorded in relief than from starting
+  filter(IPouts_relief > IPouts_start) %>% 
+  group_by(year_ID, franchID) %>% 
+  summarise(penWAR = sum(WAR, na.rm = T)) %>%
+  mutate(franchID = ifelse(franchID == "LAA", "ANA", franchID)) %>% 
+  mutate(franchID = ifelse(franchID == "MON", "WSN", franchID)) %>% 
+  mutate(franchID = ifelse(franchID == "TBR", "TBD", franchID)) %>% 
+  mutate(franchID = ifelse(franchID == "MIA", "FLA", franchID)) %>% 
+  mutate(franchID = ifelse(franchID == "CAL", "ANA", franchID))
+
+WARSet = left_join(Pen_WAR, D_R_WAR) %>% 
+  rename(yearID = year_ID)
+
+
+NewSet = Set %>% 
+  left_join(WARSet) %>% 
+  mutate(BRruns) %>% 
+  select(!franchID)
+
+head(NewSet)
+```
+
+  
+  - The 2014-2015 Royals were known for elite base running, an elite bullpen, and elite defense. They were also known for not striking out and not hitting home runs. Add the following scaled variables separately for each season to the data frame that you constructed in the previous step: 
+    - \texttt{scaledSO = scale(SO/AB)}, 
+    - \texttt{scaledBA = scale(H/AB)}, 
+    - \texttt{scaledABpHR = scale(AB/HR)}, 
+    - \texttt{scaledpenWAR = scale(penWAR)}, 
+    - \texttt{scaleddWAR = scale(dWAR)}, 
+    - \texttt{scaledBRruns = scale(BRruns)}
+
+```{r, warning=FALSE, message=FALSE}
+ScaledSet = NewSet %>% 
+  group_by(yearID) %>% 
+  mutate(scaledSO = scale(SO/AB),
+         scaledBA = scale(H/AB),
+         scaledAPpHR = scale(AB/HR),
+         scaledpenWAR = scale(penWAR),
+         scaleddWAR = scale(dWAR),
+         scaledBRruns = scale(BRruns))
+head(ScaledSet)
+```
+
+
+  - Compute and add winning percentage \texttt{Wpct} to your data frame. Use an equation in your notes and linear regression to compute the optimal $k$ so that \texttt{Wpct} is well-explained by \texttt{Wpytk} = $R^k/(R^k + RA^k)$. Add \texttt{Wpytk} and \texttt{residuals\_pytk = Wpct - Wpytk} to your data frame.
+
+```{r, warning=FALSE, message=FALSE}
+RoyalsSet = ScaledSet %>% 
+  mutate(Wpct = round(W/(W + L), 3))
+
+Royals_aug = RoyalsSet %>%
+mutate(logWratio = log(W / L),
+       logRratio = log(R / RA))
+
+RoyalpyFit = lm(logWratio ~ 0 + logRratio, data = Royals_aug)
+RoyalpyFit$coefficients
+k_Royal = 1.841277 
+RoyalPythagSet = Royals_aug %>% 
+  mutate(Wpytk = R^k_Royal/(R^k_Royal +RA^k_Royal)) %>% 
+  mutate(residuals_pytk = Wpct - Wpytk)
+
+FinalSet = RoyalsSet %>% 
+  left_join(RoyalPythagSet) %>% 
+  select(-c(logWratio, logRratio))
+head(FinalSet)
+```
+
+
+  - Display the rows of this data frame corresponding to the 2014-2015 Royals seasons.
+
+```{r, warning=FALSE, message=FALSE}
+Royals = FinalSet %>% 
+  filter(yearID == 2014 | yearID == 2015) %>% 
+  filter(teamID == "KCA")
+
+Royals
+```
+
+
+**Question 2** In this problem we will perform analyses that investigate strengths and peculiarities of the 2014-2015 Royals. Do the following:
+
+  - Fit and analyze a regression model of \texttt{residuals\_pytk} on \texttt{penWAR}. Determine how many wins one would expect the Royals to obtain above their Pythagorean expectations on the basis of their bullpen.
+  
+```{r, warning=FALSE, message=FALSE}
+PenModel = lm(residuals_pytk ~ penWAR, FinalSet)
+summary(PenModel)
+
+(0.001116*8.17-0.005293)*162
+(0.001116*9.99-0.005293)*162
+
+```
+Based on this model, the 2014 Royals would be expected to outperform their Pythagorean expectancy by 0.62 wins. The 2015 Royals would be expected to outperform their Pythagorean expectancy by 0.95 wins.
+  
+  
+  - Total bullpen WAR is just one aspect of what made the 2014-2015 Royals what they were. We will now use [k-means clustering](https://en.wikipedia.org/wiki/K-means_clustering) implemented via the [kmeans function](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/kmeans) to determine whether or not teams similar to the 2014-2015 Royals beat their Pythagorean expectations. Do the following with the number of clusters ranging from $k = 30,...,50$: 1) run kmeans on a data set containing the six scaled variables that you previously constructed with $k$ centers; 2) add the cluster assignments to the original dataset; 3) extract the average of \texttt{residuals\_pytk} for the clusters containing the 2014 or 2015 Royals after removing the Royals from consideration. When finished, compute the average \texttt{residuals\_pytk} value for the 2014 and 2015 Royals and then multiply this number by 162. This is the number of expected wins above/below their Pythagorean expectations that similar teams produced. Report this value and compare it with the 2014-2015 Royals.
+  
+```{r, warning=FALSE, message=FALSE}
+KSet = FinalSet %>% 
+  ungroup(yearID) %>% 
+  select(scaledSO:scaledBRruns)
+
+for (i in 30:50) {
+  k_means = kmeans(centers = i, x = KSet)
+  
+  clusteredSet = FinalSet %>% 
+    ungroup(yearID) %>% 
+    mutate(cluster = k_means$cluster)
+  
+  RoyalsClustered = clusteredSet %>% 
+    filter(teamID == "KCA", yearID == 2014 | yearID == 2015)
+  
+  clusters2014 = clusteredSet %>% 
+    filter(cluster == RoyalsClustered$cluster[1], teamID != "KCA") %>% 
+    summarise(residuals_pytk = sum(residuals_pytk)/n())
+  
+  clusters2015 = clusteredSet %>% 
+    filter(cluster == RoyalsClustered$cluster[2], teamID != "KCA") %>% 
+    summarise(residuals_pytk = sum(residuals_pytk)/n())
+  
+  
+}
+
+
+clusters2014$residuals_pytk*162
+clusters2015$residuals_pytk*162
+
+Royals$W[1] - Royals$Wpytk[1]*162
+Royals$W[2] - Royals$Wpytk[2]*162
+```
+Both the 2014 and the 2015 Royals were placed in the same cluster. Teams similar to both those Royals teams produced typically 0.7755 wins more than their Pythagorean win percentage. The 2014 Royals actually produced 4.84 more wins than their Pythagorean expectancy. The 2015 Royals outperformed this expectation by 4.96 wins.
+
+
+
+ - Add the \texttt{OPSscale} and \texttt{WHIPscale} variables that you computed in Question 1 of Lab 1 to the data frame. Run a regression with \texttt{Wpct} as the response variable and all eight scaled variables as predictors (you can drop terms if you want to). Does this model over/under estimate the success of the 2014-2015 Royals?
+ 
+```{r, warning=FALSE, message=FALSE}
+PredictSt = FinalSet %>% 
+  ungroup(yearID) %>% 
+  mutate(BB = Set_Save$BB, HBP = Set_Save$HBP, SF = Set_Save$SF, X2B = Set_Save$X2B, X3B = Set_Save$X3B, HA = Set_Save$HA, IPouts = Set_Save$IPouts, BBA = Set_Save$BBA, FP = Set_Save$FP) %>% 
+  mutate(X1B = H - X2B - X3B - HR) %>% 
+  mutate(OBP = (H + BB + HBP)/(AB + BB + HBP + SF)) %>%  
+	mutate(SLG = (X1B + 2*X2B + 3*X3B + 4*HR)/AB) %>% 
+	mutate(OPS = OBP + SLG) %>% 
+	mutate(WHIP = 3*(HA + BBA)/IPouts)%>%
+  mutate(IP = round(IPouts/3 ,2)) %>% 
+  group_by(yearID) %>%
+  mutate(avgOBP = round((sum(H) + sum(BB) + sum(HBP))/ (sum(AB) + sum(HBP) + sum(BB) + sum(SF)),3),
+         avgSLG = round((sum(X1B)+2*sum(X2B)+3*sum(X3B)+4*sum(HR))/sum(AB), 3),
+         avgOPS = avgSLG + avgOBP,
+         avgWHIP = round((sum(BB)+sum(H))/sum(IP),3)) %>% 
+  mutate(OPSscale = OPS/avgOPS,
+         WHIPscale = avgWHIP/WHIP)
+finalmodel = lm(Wpct ~ OPSscale + WHIPscale + scaledSO + scaledBA + scaledAPpHR + scaledpenWAR + scaleddWAR + scaledBRruns, data = PredictSt)
+
+FinalRoyalsSet = PredictSt %>% 
+  filter(yearID == 2014 | yearID == 2015, teamID == "KCA")
+
+Royals14 = 162 * (finalmodel$coefficients[1] + finalmodel$coefficients[2]*FinalRoyalsSet$OPSscale[1]+ finalmodel$coefficients[3]*FinalRoyalsSet$WHIPscale[1] + finalmodel$coefficients[4]*FinalRoyalsSet$scaledSO[1] + finalmodel$coefficients[5]*FinalRoyalsSet$scaledBA[1] + finalmodel$coefficients[6]*FinalRoyalsSet$scaledAPpHR[1] + finalmodel$coefficients[7]*FinalRoyalsSet$scaledpenWAR[1] + finalmodel$coefficients[8]*FinalRoyalsSet$scaleddWAR[1] + finalmodel$coefficients[9]*FinalRoyalsSet$scaledBRruns[1])
+
+
+Royals15 = 162 * (finalmodel$coefficients[1] + finalmodel$coefficients[2]*FinalRoyalsSet$OPSscale[2]+ finalmodel$coefficients[3]*FinalRoyalsSet$WHIPscale[2] + finalmodel$coefficients[4]*FinalRoyalsSet$scaledSO[2] + finalmodel$coefficients[5]*FinalRoyalsSet$scaledBA[2] + finalmodel$coefficients[6]*FinalRoyalsSet$scaledAPpHR[2] + finalmodel$coefficients[7]*FinalRoyalsSet$scaledpenWAR[2] + finalmodel$coefficients[8]*FinalRoyalsSet$scaleddWAR[2] + finalmodel$coefficients[9]*FinalRoyalsSet$scaledBRruns[2])
+
+
+FinalRoyalsSet$W[1] - Royals14
+FinalRoyalsSet$W[2] - Royals15
+```
+This model underestimates the Royals. In both years the Royals actually won more than expected by this model (4.97 more wins in 2014 and 6.16 more wins in 2015).
+ 
+
+
+**Question 3** Do the following: 
+
+  - Select a period of your choice (at least 20 years) and fit the Pythagorean formula model (after finding the optimal exponent) to the run-differential, win-loss data.
+  
+```{r, warning=FALSE, message=FALSE}
+MySet = Teams %>% 
+  filter(yearID >= 2000) %>% 
+  filter(yearID <= 2019) %>% 
+  mutate(Wpct = round(W/(W+L), 3))
+dat_aug = MySet %>%
+mutate(logWratio = log(W / L),
+       logRratio = log(R / RA))
+
+pyFit = lm(logWratio ~ 0 + logRratio, data = dat_aug)
+k = pyFit$coefficients
+PythagSet = dat_aug %>% 
+  mutate(Wpct_pytk = R^k/(R^k +RA^k)) %>% 
+  select(Wpct, Wpct_pytk)
+PythagModel = lm(Wpct ~ 0 + Wpct_pytk, data = PythagSet)
+summary(PythagModel)
+
+```
+  
+  
+  - On the basis of your fit in the previous part and the list of managers obtained from Retrosheet, compile a top 10 list of managers who most overperformed their Pythagorean winning percentage and a top 10 list of managers who most underperformed their Pythagorean winning percentage.
+
+In class, Dr. Eck said that it may be easier to do this exercise using the data from Lahman rather than finding and pulling all the data from Retrosheet, so that's what I did. For managers that didn't manage a full season, I assigned the runs and runs allowed that were proportional to the time that they did manage to them. For example, if two managers each managed 81 games, and the team scored 200 runs and allowed 150, both managers would have 100 runs scored and 75 runs allowed contributed to them.
+
+```{r, warning=FALSE, message=FALSE}
+Runs = Teams %>% 
+  select(teamID, yearID, R, RA)
+List = Managers %>% 
+  filter(yearID>=2000) %>% 
+  filter(yearID<=2019) %>% 
+  left_join(People) %>% 
+  left_join(Runs) %>%
+  select(nameFirst, nameLast, G, W, L, R, RA, yearID, playerID, teamID, inseason) %>% 
+  mutate(Rportion = round(R * G/162,2),
+         RAportion = round(RA * G/162,2)) %>% 
+  select(nameFirst, nameLast, G, W, L, R, Rportion, RA, RAportion, yearID, playerID, teamID) %>% 
+  group_by(playerID) %>% 
+  summarise(R = sum(Rportion), RA = sum(RAportion), G = sum(G), W = sum(W), L = sum(L)) %>%
+  mutate(pythagpct = round((R^k) / (R^k + RA^k),3),
+         Wpct = round(W/G, 3)) %>% 
+  mutate(diff = Wpct - pythagpct) %>% 
+  group_by(playerID) %>% 
+  summarise(difference = sum(diff)) %>% 
+  left_join(People) %>% 
+  select(nameFirst, nameLast, difference) %>% 
+  arrange(desc(difference))
+
+
+#Ten best
+List[1:10,]
+
+
+#Ten worst
+List[169:160,]
+```
+
+
+**Question 4** The first question in Section 1.4.3 of Analyzing Baseball Data with R. Your answer to this question must include the code to obtain the answer. You cannot copy the answer directly from the book.
+
+
+```{r, warning=FALSE, message=FALSE}
+data = read.csv("C:/Users/STP/Desktop/stat430/stat430sp25/all1998.csv")
+McGwireID = People %>% 
+  filter(nameFirst == "Mark" & nameLast == "McGwire") %>% 
+  pull(retroID)
+
+SosaID = People %>% 
+  filter(nameFirst == "Sammy" & nameLast == "Sosa") %>% 
+  pull(retroID)
+
+MMHomers = data %>% 
+  filter(BAT_ID == McGwireID) %>% 
+  filter(BASE1_RUN_ID != "" | BASE2_RUN_ID != "" | BASE3_RUN_ID != "") %>% 
+  filter(EVENT_CD != 15) %>% 
+  filter(EVENT_CD != 16) %>% 
+  #Note of 317 events total
+  filter(EVENT_CD == 23)
+  #37 home runs
+
+SosaHomers = data %>%
+  filter(BAT_ID == SosaID) %>% 
+  filter(BASE1_RUN_ID != "" | BASE2_RUN_ID != "" | BASE3_RUN_ID != "") %>% 
+  filter(EVENT_CD != 15) %>% 
+  filter(EVENT_CD != 16) %>% 
+  #368 opportunities
+  filter(EVENT_CD == 23)
+  #29 home runs
+  
+
+```
+I opted to include non-intentional walks in my count as opposed to the book because unlike being hit by a pitch or intentionally walked, the batter does have a choice in that outcome.
+
+My conclusion is the same as the book's. McGwire had more home runs total, and he had less opportunities to do so, making him more successful at hitting home runs with runners on base in the 1998 season.
+
+
