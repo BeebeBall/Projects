@@ -1,0 +1,14 @@
+---
+title: "about"
+author: "Matthew Raitano"
+date: "2025-05-08"
+output: html_document
+---
+
+# Authors
+- Nate Beebe
+- Matthew Raitano
+
+# Description
+
+This is an R Shiny App that aims to predict the outcomes of at bats based on who the pitcher is and a who the batter is. The options were broken down into the years 2022, 2023, and 2024, but the batters and pitchers available were only the top 100 most active of the year so they had enough of a sample size to go off of. We tried to make regression equations based on the players stats for themselves and combine them into the most likely result if the two were to face off.
