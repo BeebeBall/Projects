@@ -1,0 +1,503 @@
+---
+title: "Lab 4"
+author: "Nate Beebe"
+date: "Due on 4/12/25 at 11:59 pm"
+output: pdf_document
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+For this lab assignment you will have to create a data set called \texttt{sc\_bip\_small}. This data set should contain statcast data for all balls in play from 2017-2021. Statcast data can be obtained from this link:
+
+https://uofi.app.box.com/file/1449126291821?s=we34tcz4wqdu063zpzuwjvb4r6u9j21s
+
+
+There is a script called \texttt{create\_sc\_bip\_small.R} in the **stat430sp25** repo to aid you in this task of creating the \texttt{sc\_bip\_small} data set.
+```{r, message=F, warning=FALSE}
+library(tidyverse)
+library(Lahman)
+
+## get relevant path to statcast data set
+sc = read_csv("C:/Users/STP/Downloads/statcast.csv")
+
+
+
+# get balls in play and isolate relevant variables
+# (feel free to play around with relevant variables)
+sc_bip = sc %>% filter(type == "X") %>% 
+  dplyr::select(game_date, events, batter_name, stand, p_throws, pitcher_name, pitch_type, 
+                launch_speed, launch_angle, hc_x, hc_y, release_speed, release_spin_rate, 
+                #spin_dir,
+                pfx_x, pfx_z, plate_x, plate_z, if_fielding_alignment, 
+                estimated_ba_using_speedangle, estimated_woba_using_speedangle, 
+                of_fielding_alignment, batter, pitcher)
+
+# store data set, correcting paths
+write_csv(sc_bip, file = "C:/Users/STP/Downloads/sc_bip_small.csv")
+
+```
+
+
+\vspace{12pt}
+
+**Question 1** Do the following for a year of your choice with the exception of 2020: 
+
+(a) List the batters with the ten highest average exit velocities on batted balls. 
+
+```{r, message=F, warning=F}
+sc_bip_small = read.csv("C:/Users/STP/Downloads/sc_bip_small.csv")
+sc_bip_small1 = sc_bip_small %>% 
+  mutate(exit_velo = launch_speed) %>% 
+  select(-launch_speed)
+batters = sc_bip_small1 %>%
+  mutate(year = year(game_date)) %>% 
+  filter(year == 2019) %>% 
+  group_by(batter_name)
+  
+batter_ev = batters %>% 
+  summarise(n = n(),
+            avg_ev = mean(exit_velo, na.rm = T)) %>%
+  filter(n >= 300) %>% 
+  select(-n) %>% 
+  arrange(desc(avg_ev))
+batter_ev %>% 
+  head(10)
+```
+
+
+
+(b) Plot the distribution of exit velocities across batters. Does exit velocity vary significantly across batters? Explain your reasoning.
+
+```{r, message=F, warning=FALSE}
+sc_bip_small_ = sc_bip_small %>% mutate(year = year(game_date)) %>% 
+  filter(year == 2019)
+
+sc_regulars = sc_bip_small_ %>% 
+	filter(!is.na(launch_speed)) %>% 
+	inner_join(batter_ev, by = c("batter_name"))
+
+ev_plot1 = ggplot(sc_regulars,
+aes(x = launch_speed, group = batter_name)) +
+geom_density(linewidth = 0.1, color = "darkgray") +
+scale_x_continuous("Exit Velocity (MPH)")
+ev_plot1
+```
+I would say it does vary. There appear to be two peaks in the data, one a little lower where I would say league average is, and one a tad higher with the leaders.
+
+
+(c) List the pitchers with the ten highest average exit velocities allowed on batted balls.
+
+```{r, message=F, warning=FALSE}
+pitchers = sc_bip_small1 %>%
+  mutate(year = year(game_date)) %>% 
+  filter(year == 2019) %>% 
+  group_by(pitcher_name)
+
+pitcher_ev = pitchers %>% 
+  summarise(n = n(),
+            avg_ev = mean(exit_velo, na.rm = T)) %>%
+  filter(n >= 300) %>% 
+  select(-n) %>% 
+  arrange(desc(avg_ev))
+pitcher_ev %>% 
+  head(10)
+```
+
+
+(d) Plot the distribution of exit velocities allowed across pitchers. Does exit velocity allowed vary significantly across pitchers? Explain your reasoning.
+
+```{r, message=F, warning=FALSE}
+sc_bip_small_ = sc_bip_small %>% mutate(year = year(game_date)) %>% 
+  filter(year == 2019)
+sc_regulars_ = sc_bip_small_ %>% 
+	filter(!is.na(launch_speed)) %>% 
+	inner_join(pitcher_ev, by = c("pitcher_name"))
+
+ev_plot2 = ggplot(sc_regulars_,
+aes(x = launch_speed, group = pitcher_name)) +
+geom_density(linewidth = 0.1, color = "darkgray") +
+scale_x_continuous("Exit Velocity (MPH)")
+ev_plot2
+```
+Similar to the batter graph, there are multiple peaks. It varies between the two groups but they seem centered on those two peaks. There are a few wild densities however that don't really fit into either peak. 
+
+(e) Compute the correlation for exit velocity for batters between the first and second half of the season you chose.
+
+The first half and second half of the season commonly references the All-Star Game and not actually splitting the season into two 81 game halves, so I will use the 2019 All-Star Game (July 9th) as the cutoff.
+
+```{r, message=F, warning=FALSE}
+second_half = batters %>% 
+  filter(game_date > '2019-07-09')
+first_half = batters %>% 
+  filter(game_date < '2019-07-09')
+first_half = first_half %>% 
+  summarise(n = n(),
+            avg_ev = mean(exit_velo, na.rm = T)) %>%
+  filter(n>100) %>% 
+  select(-n)
+second_half = second_half %>% 
+  summarise(n = n(),
+            avg_ev2 = mean(exit_velo, na.rm = T)) %>% 
+  filter(n>50) %>% 
+  select(-n)
+
+halves = first_half %>% 
+  left_join(second_half) %>% 
+  filter(avg_ev < 200 & avg_ev > 0 & avg_ev2 < 200 & avg_ev > 0)
+view(halves)
+cor(halves$avg_ev, halves$avg_ev2)
+```
+
+
+(f) On the basis of your calculations, do you believe exit velocity us a batter skill? Explain.
+
+There is a strong correlation between the average exit velocites for each half of the season. This leads me to believe that this is a skill and is not simply luck.
+
+**Question 2** In this question we will try to predict next years [slugging percentage](https://en.wikipedia.org/wiki/Slugging_percentage) using several variables including statcast variables. Load in the data set \texttt{sc\_bip\_small} and run the code below to calculate some possibly important variables that encode launch angle and exit velocity distributional information for each player.
+
+```{r, warning=F, message=FALSE}
+foo = sc_bip_small %>%
+  mutate(yearID = year(game_date)) %>% 
+  group_by(batter_name, yearID) %>% 
+  summarise(N = n(), launch_angle = launch_angle, launch_speed = launch_speed) %>% 
+  filter(N >= 10) %>% 
+  summarise(avg_la = mean(launch_angle, na.rm = TRUE), 
+            sd_la = sd(launch_angle, na.rm = TRUE), 
+            la10 = quantile(launch_angle, prob = c(0.10), na.rm = TRUE), 
+            la25 = quantile(launch_angle, prob = c(0.25), na.rm = TRUE), 
+            la50 = quantile(launch_angle, prob = c(0.50), na.rm = TRUE), 
+            la75 = quantile(launch_angle, prob = c(0.75), na.rm = TRUE), 
+            la90 = quantile(launch_angle, prob = c(0.90), na.rm = TRUE), 
+            avg_ev = mean(launch_speed, na.rm = TRUE), 
+            sd_ev = sd(launch_speed, na.rm = TRUE), 
+            ev10 = quantile(launch_speed, prob = c(0.10), na.rm = TRUE), 
+            ev25 = quantile(launch_speed, prob = c(0.25), na.rm = TRUE), 
+            ev50 = quantile(launch_speed, prob = c(0.50), na.rm = TRUE), 
+            ev75 = quantile(launch_speed, prob = c(0.75), na.rm = TRUE), 
+            ev90 = quantile(launch_speed, prob = c(0.90), na.rm = TRUE)) %>% 
+  rename(name = batter_name)
+```
+
+
+ - Create a data frame for batters that contains slugging percentage (SLG) for each player. Call this data frame \texttt{bat\_stat}. This data frame should contain the following variables: \texttt{name}, \texttt{yearID}, \texttt{teamID}, \texttt{AB}, and \texttt{SLG}. You can restrict attention to batters who had at least 200 ABs and who only played on a single team (\texttt{stint = 1} in the \texttt{Batting} data frame in the \texttt{Lahman} package).
+ 
+```{r, message=F, warning=F}
+bat_stat = Batting %>% 
+  filter(stint == 1 & AB >= 200) %>% 
+  mutate(X1B = H - X2B - X3B - HR) %>% 
+  mutate(SLG = round((X1B + 2*X2B + 3*X3B + 4*HR)/AB, 3)) %>% 
+  left_join(People) %>% 
+  unite("name", nameFirst, nameLast, sep = " ") %>% 
+  select(name, yearID, teamID, AB, SLG) %>% 
+  filter(yearID != 2020)
+```
+ 
+
+ - Merge \texttt{foo} into \texttt{bat\_stat} using \texttt{inner\_join} or a similar function. Run the following code which creates new variables \texttt{SLG\_next} and \texttt{team\_next} which are a player's slugging percentage and team for the next season. The code also creates a categorical variable \texttt{COL} which indicates whether the player's next season is with the Rockies. Note that you may have to change the \texttt{by} argument in the \texttt{inner\_join} call below to get it to work.
+
+```{r, message=F, warning=F}
+bat_stat = inner_join(bat_stat, foo, by = c("name", "yearID"))
+
+bar = bat_stat %>% mutate(yearID = ifelse(yearID == 2021, 2020, yearID)) %>%
+  mutate(yearID = ifelse(yearID == 2022, 2021, yearID)) %>% 
+  group_by(name, yearID) %>% 
+  summarise(SLG, teamID) %>% 
+  mutate(SLG_next = SLG[match(yearID, yearID-1)]) %>% 
+  mutate(team_next = teamID[match(yearID, yearID-1)]) %>%
+  mutate(yearID = ifelse(yearID == 2021, 2022, yearID)) %>%
+  mutate(yearID = ifelse(yearID == 2020, 2021, yearID)) %>% 
+  select(-SLG,-teamID)
+
+bat_stat = inner_join(bat_stat, bar, by = c("name", "yearID")) %>% 
+  mutate(COL = ifelse(team_next == "COL",1,0)) %>% 
+  filter(complete.cases(.))
+
+```
+
+
+ - We are going to use a simple procedure to assess predictive performance. Run the code below to split \texttt{bat\_stat} into a model training data set \texttt{train} and a model testing data set \texttt{test}.
+
+
+```{r, message=F, warning=F}
+set.seed(13)
+ind = sample(1:nrow(bat_stat), size = 400, replace = FALSE)
+train = bat_stat[ind, ]
+test = bat_stat[-ind, ]
+```
+
+
+ - Fit and compare the following models. Which model would you select for predicting slugging percentage (root mean squared prediction error is a good metric for assessing predictive performance)? Are statcast variables important for predicting slugging percentage? Explain. Try to find a model which offers better predictive performance than the best model below. Comment on the success of your efforts.
+
+
+```{r, message=F, warning=F}
+m_big = lm(SLG_next ~ SLG + avg_la + avg_ev + team_next + sd_la + sd_ev + 
+           sd_la*avg_la + sd_ev*avg_ev +
+           la10 + la25 + la50 + la75 + la90 + 
+           ev10 + ev25 + ev50 + ev75 + ev90, 
+         data = train)
+summary(m_big)
+sqrt(mean(m_big$residuals^2))
+m_small = lm(SLG_next ~ SLG + avg_la + avg_ev + COL, 
+         data = train)
+summary(m_small)
+sqrt(mean(m_small$residuals^2))
+m_smaller = lm(SLG_next ~ SLG  + COL, data = train)
+summary(m_smaller)
+sqrt(mean(m_smaller$residuals^2))
+```
+Of these three models, the "m_big" model has both the highest R^2 value as well as the smallest MSE suggesting that it is the best fit. I would say that the Statcast data is important in predicting next season's SLG percentage.
+
+
+```{r, message=F, warning=F}
+new_set = train %>% 
+  select(-c(name, yearID))
+m_new = lm(SLG_next ~ ., data = new_set)
+
+step(m_new, direction = "both")
+
+m_newer = lm(SLG_next ~ AB + SLG + sd_la + la75 + sd_ev + ev90, data = new_set)
+summary(m_newer)
+mean(m_newer$residuals^2)
+AIC(m_big)
+AIC(m_newer)
+```
+I wasn't able to find a model better than "m_big" in terms of predictive performance, however the AIC is lower in my new model which could suggest a better overall fit.
+
+
+
+**Question 3** The 2021 San Francisco Giants certainly surprised a lot of people when they won 107 games with a rotation led by Kevin Gausman, Logan Webb, Anthony DeSclafani, and Alex Wood. Coming into the 2021 season, I think it is fair to say that this is a shaky rotation. One [commentator](https://aroundthefoghorn.com/2021/03/27/sf-giants-rotation-risky-experiment/) said that the Giants have developed reputation as an organization that can make players better, but that reputation will be tested with a risky experiment in 2021. Let's investigate the success of the 2021 San Francisco Giants. In this question we will look at the 2021 San Francisco Giants pitching staff from a recent historical perspective. In the next question we will examine specific Giants pitchers. As an aside, anyone can go down the rabbit hole that your professor went down as this problem was developed:
+
+ - [Logan Webb, As Advertised](https://blogs.fangraphs.com/logan-webb-as-advertised/)
+ - [What the Heck Is a Flat Sinker, Anyway?](https://blogs.fangraphs.com/what-the-heck-is-a-flat-sinker-anyway/)
+ - [The Giants Took a New Angle With Sinkers](https://blogs.fangraphs.com/the-giants-took-a-new-angle-with-sinkers/)
+ - [The Seam-Shifted Revolution Is Headed for the Mainstream](https://blogs.fangraphs.com/the-seam-shifted-revolution-is-headed-for-the-mainstream/)
+ - [Pitch Movement, Spin Efficiency, and All That](https://tht.fangraphs.com/pitch-movement-spin-efficiency-and-all-that/)
+ - [Prospectus Feature: All Spin Is Not Alike](https://www.baseballprospectus.com/news/article/25915/prospectus-feature-all-spin-is-not-alike/)
+ - [Determining the 3D Spin Axis from Statcast Data](http://baseball.physics.illinois.edu/trackman/SpinAxis.pdf)
+
+First create a data frame that contains the following variables on team pitching statistics: \texttt{yearID}, \texttt{teamID}, \texttt{frac\_junk}, \texttt{ERA}, \texttt{HAp9}, \texttt{HRAp9}, and \texttt{WAR}. This data frame only needs to be created for the 2017, 2018, 2019, and 2021 baseball seasons. The variables \texttt{HAp9} and \texttt{HRAp9} are, respectively, hits allowed per 9 innings and home runs allowed per 9 innings. The variable \texttt{frac\_junk} is the fraction of team pitches that are sinkers (SI), splitters (FS), sliders (SL), or change ups (CH) for a given season. Calculation of \texttt{frac\_junk} involves the use of all statcast data for the 2017, 2018, 2019, and 2021 baseball seasons. The statcast data set is massive and a Rmd document might not compile if this data set is directly loaded in and manipulated. I recommend that you first perform your data manipulations to statcast data in an active R session, then save a much smaller data set which contains your data manipulations onto your computer, then load this smaller data set into the Rmd document corresponding to your lab assignment. The code below obtains pitching WAR.
+ 
+```{r, message=F, warning=F}
+bwar_pit = 
+  readr::read_csv("https://www.baseball-reference.com/data/war_daily_pitch.txt", 
+                  na = "NULL") %>% 
+	filter(year_ID >= 2017) %>% 
+	select(team_ID, year_ID, WAR) %>% 
+	rename(teamID = team_ID, yearID = year_ID)
+
+bwar_pit = bwar_pit %>%
+  filter(WAR > -100 & WAR < 100) %>% 
+  group_by(teamID, yearID) %>% 
+  summarise(WAR = sum(WAR, na.rm = T)) %>% 
+  filter(yearID >= 2017 & yearID <= 2021 & yearID != 2020)
+
+
+#Creating non-Statcast dataset
+set = Pitching %>% 
+  filter(yearID >= 2017 & yearID <= 2021 & yearID != 2020) %>%
+  group_by(teamID, yearID) %>% 
+  summarise(IPouts = sum(IPouts),
+            HR = sum(HR),
+            H = sum(H),
+            ER = sum(ER)) %>% 
+  mutate(ERA = round((ER*27)/IPouts, 3),
+         HAp9 = round(H/(IPouts/27),3),
+         HRAp9 = round(HR/(IPouts/27),3)) %>% 
+  select(yearID, teamID, ERA, HRAp9, HAp9) %>%
+  mutate(teamID = as.character(teamID)) %>% 
+  mutate(teamID = replace(teamID, teamID == "CHA", "CHW")) %>% 
+  mutate(teamID = replace(teamID, teamID == "CHN", "CHC")) %>% 
+  mutate(teamID = replace(teamID, teamID == "KCA", "KCR")) %>% 
+  mutate(teamID = replace(teamID, teamID == "LAN", "LAD")) %>%
+  mutate(teamID = replace(teamID, teamID == "NYN", "NYM")) %>%
+  mutate(teamID = replace(teamID, teamID == "NYA", "NYY")) %>%
+  mutate(teamID = replace(teamID, teamID == "SDN", "SDP")) %>%
+  mutate(teamID = replace(teamID, teamID == "SFN", "SFG")) %>%
+  mutate(teamID = replace(teamID, teamID == "SLN", "STL")) %>%
+  mutate(teamID = replace(teamID, teamID == "TBA", "TBR")) %>%
+  mutate(teamID = replace(teamID, teamID == "WAS", "WSN"))
+
+
+set = bwar_pit %>% 
+  left_join(set)
+
+road = sc %>%
+  mutate(yearID = year(game_date)) %>% 
+  select(pitch_type, inning_topbot, home_team, away_team, yearID) %>% 
+  filter(inning_topbot == "Bot") %>% 
+  select(pitch_type, away_team, yearID) %>% 
+  mutate(junk = as.integer(pitch_type == "SL" | pitch_type == "SI" | pitch_type == "FS" | pitch_type == "CH")) %>% 
+  mutate(team = away_team) %>% 
+  group_by(team, yearID) %>% 
+  summarise(junk = sum(junk, na.rm = T), N = n())
+
+home = sc %>%
+  mutate(yearID = year(game_date)) %>%
+  select(pitch_type, inning_topbot, home_team, away_team, yearID) %>% 
+  filter(inning_topbot == "Top") %>% 
+  select(pitch_type, home_team, yearID) %>% 
+  mutate(junk = as.integer(pitch_type == "SL" | pitch_type == "SI" | pitch_type == "FS" | pitch_type == "CH")) %>% 
+  mutate(team = home_team) %>% 
+  group_by(team) %>% 
+  summarise(junk1 = sum(junk, na.rm = T), N1 = n())
+
+junk = home %>% 
+  left_join(road) %>% 
+  mutate(frac_junk = (junk1 + junk) / (N1+N),
+         teamID = team) %>% 
+  filter(yearID != 2022) %>% 
+  select(teamID, yearID, frac_junk) %>% 
+  mutate(teamID = replace(teamID, teamID == "AZ", "ARI")) %>%
+  mutate(teamID = replace(teamID, teamID == "CWS", "CHW")) %>%
+  mutate(teamID = replace(teamID, teamID == "KC", "KCR")) %>%
+  mutate(teamID = replace(teamID, teamID == "SD", "SDP")) %>%
+  mutate(teamID = replace(teamID, teamID == "SF", "SFG")) %>%
+  mutate(teamID = replace(teamID, teamID == "TB", "TBR")) %>%
+  mutate(teamID = replace(teamID, teamID == "WSH", "WSN"))
+
+q3_data = set %>% 
+  left_join(junk) %>% 
+  select(yearID, teamID, frac_junk, ERA, HAp9, HRAp9, WAR)
+```
+
+Use the data set that you created to study the 2021 pitching season. Were the 2021 Giants successful? Did they perform similarly to other teams that throw a lot of junk balls where junk is defined as sinkers, splitters, sliders, and change ups? Elaborate.
+
+```{r, message=F, warning=F}
+frac_SFG = q3_data %>% 
+  filter(yearID == 2021 & teamID == "SFG") %>% 
+  pull(frac_junk)
+
+frac_sd = sqrt(var(q3_data$frac_junk))
+
+new = q3_data %>%
+  mutate(close = abs(frac_junk - frac_SFG)) %>% 
+  arrange(close) %>% 
+  head(15) %>%
+  select(-close) %>% 
+  arrange(desc(WAR))
+
+new
+
+sqrt(var(new$WAR))
+```
+Yes, the 2021 Giants were very successful. The number I included above is the standard deviation for pitching WAR among the 14 teams closest to the 2021 Giants in terms of \texttt{frac\_junk}. The 2021 Giants were almost one full standard deviation better in WAR than the next closest team. In every single variable measured above, the 2021 Giants rank the best. I would say they were very successful compared to the other teams that threw a similar fraction of "junk."
+
+
+
+**Question 4** For each pitch type thrown by Kevin Gausman, Logan Webb, Anthony DeSclafani, and Alex Wood, compute annual averages of \texttt{release\_spin\_rate}, 
+\texttt{effective\_speed}, 
+\texttt{plate\_x}, 
+\texttt{plate\_z}, 
+\texttt{pfx\_x}, 
+\texttt{pfx\_z}, 
+\texttt{release\_x}, 
+and \texttt{release\_z}, and compute the annual pitch type percentages for each of these pitchers. Now display a graphic showing how these annual averages change over time for each of these pitchers. It is best to display all nine plots for each pitcher in a single grid of plots rather than printing off nine separate plots. This can be achieved using the \texttt{grid.arrange} function in the \texttt{gridExtra} package. Comment on how the approach of these pitchers changed over time with an emphasis on any changes made in 2021. Comment on any commonalities or differences between these pitchers. What are some of the reasons for the pitching success of 2021 San Francisco Giants pitchers?
+
+```{r, message=F, warning=F}
+library(gridExtra)
+percentages = sc %>% 
+  filter(pitcher_name == "Kevin Gausman" | pitcher_name == "Logan Webb" | pitcher_name == "Anthony DeSclafani" | pitcher_name == "Alex Wood") %>% 
+  mutate(Name = pitcher_name,
+         Year = year(game_date)) %>% 
+  select(Name, Year, pitch_type) %>% 
+  mutate(SL = as.integer(pitch_type == "SL"),
+         FF = as.integer(pitch_type == "FF"),
+         FS = as.integer(pitch_type == "FS"),
+         CH = as.integer(pitch_type == "CH"),
+         SI = as.integer(pitch_type == "SI"),
+         KC = as.integer(pitch_type == "KC"),
+         PO = as.integer(pitch_type == "PO"),
+         CU = as.integer(pitch_type == "CU"),
+         FC = as.integer(pitch_type == "FC"),
+         Unknown = as.integer(is.na(pitch_type))) %>% 
+  group_by(Name, Year) %>% 
+  summarise(SL = sum(SL, na.rm = T),
+            FF = sum(FF, na.rm = T),
+            FS = sum(FS, na.rm = T),
+            CH = sum(CH, na.rm = T),
+            SI = sum(SI, na.rm = T),
+            KC = sum(KC, na.rm = T),
+            PO = sum(PO, na.rm = T),
+            CU = sum(CU, na.rm = T),
+            FC = sum(FC, na.rm = T),
+            Unknown = sum(Unknown, na.rm = T),
+            N = n()) %>% 
+  mutate(SLpct = round(SL/N,2),
+         FFpct = round(FF/N,2),
+         FSpct = round(FS/N,2),
+         CHpct = round(CH/N,2),
+         SIpct = round(SI/N,2),
+         KCpct = round(KC/N,2),
+         POpct = round(PO/N,2),
+         CUpct = round(CU/N,2),
+         FCpct = round(FC/N,2),
+         NApct = round(Unknown/N, 2)) %>% 
+  select(Year, Name, SLpct:NApct)
+
+
+averages = sc %>% 
+  filter(pitcher_name == "Kevin Gausman" | pitcher_name == "Logan Webb" | pitcher_name == "Anthony DeSclafani" | pitcher_name == "Alex Wood") %>% 
+  mutate(Name = pitcher_name,
+         Year = year(game_date)) %>% 
+  select(Year, Name, release_spin_rate, effective_speed, plate_x, plate_z, pfx_x, pfx_z, release_pos_x, release_pos_z) %>% 
+  group_by(Name, Year) %>% 
+  summarise(release_spin_rate = mean(release_spin_rate, na.rm = T),
+            effective_speed = mean(effective_speed, na.rm = T),
+            plate_x = mean(plate_x, na.rm = T),
+            plate_z = mean(plate_z, na.rm = T),
+            pfx_x = mean(pfx_x, na.rm = T),
+            pfx_z = mean(pfx_z, na.rm = T),
+            release_pos_x = mean(release_pos_x, na.rm = T),
+            release_pos_z = mean(release_pos_z, na.rm = T))
+averages %>% 
+  left_join(percentages)
+
+SL_graph = ggplot(percentages, aes(x = Year, y = SLpct, color = Name))+
+  geom_line()
+FF_graph = ggplot(percentages, aes(x = Year, y = FFpct, color = Name))+
+  geom_line()
+FS_graph = ggplot(percentages, aes(x = Year, y = FSpct, color = Name))+
+  geom_line()
+CH_graph = ggplot(percentages, aes(x = Year, y = CHpct, color = Name))+
+  geom_line()
+SI_graph = ggplot(percentages, aes(x = Year, y = SIpct, color = Name))+
+  geom_line()
+KC_graph = ggplot(percentages, aes(x = Year, y = KCpct, color = Name))+
+  geom_line()
+PO_graph = ggplot(percentages, aes(x = Year, y = POpct, color = Name))+
+  geom_line()
+CU_graph = ggplot(percentages, aes(x = Year, y = CUpct, color = Name))+
+  geom_line()
+FC_graph = ggplot(percentages, aes(x = Year, y = FCpct, color = Name))+
+  geom_line()
+
+spin = ggplot(averages, aes(x = Year, y = release_spin_rate, color = Name))+
+  geom_line()
+ef_speed = ggplot(averages, aes(x = Year, y = effective_speed, color = Name))+
+  geom_line()
+p_x = ggplot(averages, aes(x = Year, y = plate_x, color = Name))+
+  geom_line()
+p_z = ggplot(averages, aes(x = Year, y = plate_z, color = Name))+
+  geom_line()
+pfx_x = ggplot(averages, aes(x = Year, y = pfx_x, color = Name))+
+  geom_line()
+pfx_z = ggplot(averages, aes(x = Year, y = pfx_z, color = Name))+
+  geom_line()
+r_x = ggplot(averages, aes(x = Year, y = release_pos_x, color = Name))+
+  geom_line()
+r_z = ggplot(averages, aes(x = Year, y = release_pos_z, color = Name))+
+  geom_line()
+
+```
+![](C:/Users\STP\Pictures\Screenshots\PitchTypesGraph.png)
+![](C:/Users\STP\Pictures\Screenshots\PitchStatsGraph.png)
+
+
+Looking at these graphs (I had to include screenshots due to the R code not displaying in a visible way), the first thing that is very obvious is that Logan Webb developed a cutter (FC) that he used in 2021. However, that is used at such a low percentage that the graph is misleading. Across the four pitchers, they all used thier sliders (SL) more frequently than in the past, significantly more for Wood and DeSclafani. They all also threw less four-seam fastballs (FF) and knuckle-curveballs (KC). 
+
+It seems like the biggest change from the average stats is that release spin rate is a little down for Webb and DeSclafani. It looks like the Giants were trying to maybe get all of their pitchers to a certain range of the \texttt{plate\_x} variable with a couple pitchers going down in 2021, and a couple went up
+
+I think a big reason for the pitching success is that these pitchers changed their arsenal of pitches, and hitters weren't ready for it. They went very slider heavy as a staff, and it appears they found four good sliders. The biggest visual change among the other graph is the spin rate graph. I think that the change in the spin rate for the 2021 season confused hitters.
