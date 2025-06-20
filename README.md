@@ -13,15 +13,13 @@ This is a collection of my personal projects that I have created using R and pub
 
 ### Predicting the Outcome of an At-Bat Based on a Specific Batter and Pitcher
 
-My final project in my Baseball Statistics course was to create an "interesting" application. The idea that I developed with a partner was to predict the likelihood that an at-bat ends in a strikeout, walk, hit-by-pitch, single, double, triple, home run, or an out on a ball in play. To do this, we used an article on FanGraphs for inspiration, but we made all the calculations and performed all the checks ourselves. This app breaks down data from 2022-2024 into different groups depending on the rate of occurrence for each considered outcome, then it utilizes linear modeling to predict the likelihood of each outcome. I am still working on refining this application  to create a better model. The R-squared value for predicting each of the outcomes ranged from THIS to THIS, with triples being the highest and THIS being the lowest. 
+My final project in my Baseball Statistics course was to create an "interesting" application. The idea that I developed with a partner was to predict the likelihood that an at-bat ends in a strikeout, walk, hit-by-pitch, single, double, triple, home run, or an out on a ball in play. To do this, we used an article on FanGraphs for inspiration, but we made all the calculations and performed all the checks ourselves. This app breaks down data from 2022-2024 into different groups depending on the rate of occurrence for each considered outcome, then it utilizes linear modeling to predict the likelihood of each outcome. I am still working on refining this application  to create a better model. The R-squared value for predicting each of the outcomes ranged from 0.83 to 0.97, with home runs being the lowest and triples being the highest. 
 
 Below are many screenshots from different examples of the app calculating likelihoods:
 
-<img width="642" alt="image" src="https://github.com/user-attachments/assets/47197232-b83c-40cd-b532-d9c1a0856ad9" />
+![Bobby Witt Jr. in 2024 against Brad Keller in 2024]()
 
-![]()
-
-![]()
+![Christian Yelich in 2024 against Tim Hill in 2022]("C:/Users/STP/Pictures/Screenshots/YelichHillAB.png")
 
 ![]()
 
