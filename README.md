@@ -18,11 +18,13 @@ My final project in my Baseball Statistics course was to create an "interesting"
 Below are many screenshots from different examples of the app calculating likelihoods:
 
 ![image](https://github.com/user-attachments/assets/8e5a6b21-a776-4929-90c8-4081b723b1cc)
-*test*
+*This image displays our prediction of what would happen if Bobby Witt Jr. (in 2022) met Luis Gil (in 2024).*
 
-![Christian Yelich in 2024 against Tim Hill in 2022]("C:/Users/STP/Pictures/Screenshots/YelichHillAB.png")
+![image](https://github.com/user-attachments/assets/412e524a-088e-4856-8fa5-647ea5e4a44e)
+*Here we are predicting what would happen in a matchup between C.J. Abrams and Dustin May, all using their 2023 statistics*
 
-![]()
+![image](https://github.com/user-attachments/assets/96e7218e-1eee-4f09-abee-51a763387fd7)
+*Our "About" tab*
 
 ### A Display of Standard Counting Statistics for Specific Player Seasons
 
