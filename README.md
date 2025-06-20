@@ -2,7 +2,7 @@
 This is a collection of my personal projects that I have created using R and publicly available data sources. Below, I will walk through how each project was made and show examples of them being used. 
 
 ## Table of Contents
--[A Display of Standard Counting Statistics for Specific Player Seasons](#counting)
+-[A Display of Standard Counting Statistics for Specific Player Seasons](#a-display-of-standard-counting-statistics-for-specific-player-seasons)
 
 -[General Lab Assignments for a 400 Level Baseball Statistics Course](#labs)
 
@@ -10,11 +10,6 @@ This is a collection of my personal projects that I have created using R and pub
 
 -[A Display of a Specific Player's Rate Statistics Compared to League Average](#rate)
 
-#counting
 
 
-
-
-
-
-#rate
+#A Display of Standard Counting Statistics for Specific Player Seasons
