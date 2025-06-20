@@ -29,7 +29,7 @@ Below are many screenshots from different examples of the app calculating likeli
 ### A Display of Standard Counting Statistics for Specific Player Seasons
 
 For this project, I set out to build an R Shiny application that would easily let me view statistics for any player within the Lahman database. A driving factor in this project was to simply learn how to build an R Shiny application. This project has multiple tabs allowing me to showcase information in both a graph and a table, and there is an "About" tab detailing the functionality of the app and giving any necessary credits to the inspirations that I took. In the "Graph" tab of the app, statistics are limited to one specific player for one specific season. However, when using the "Table" tab, there is a checkbox that is available on the main tab that will alter the results. When selected, the statistics for every player on the selected team for the selected season are displayed. When left unselected, every player from every season for the selected team will be displayed.
-
+[This is a link to a ~10 minute YouTube video of Matthew and I explaining how the app works and how it was designed](https://youtu.be/J6ACcIVyuhM?si=RlKZLdLvxxZ8owus)
 Below are screenshots of the app in use for you to view:
 
 ![image](https://github.com/user-attachments/assets/1108ef7e-ddae-4165-99f8-e7221156ac48)
