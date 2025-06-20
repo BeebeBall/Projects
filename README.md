@@ -17,7 +17,8 @@ My final project in my Baseball Statistics course was to create an "interesting"
 
 Below are many screenshots from different examples of the app calculating likelihoods:
 
-![Bobby Witt Jr. in 2024 against Brad Keller in 2024]()
+![image](https://github.com/user-attachments/assets/8e5a6b21-a776-4929-90c8-4081b723b1cc)
+
 
 ![Christian Yelich in 2024 against Tim Hill in 2022]("C:/Users/STP/Pictures/Screenshots/YelichHillAB.png")
 
