@@ -15,6 +15,8 @@ This is a collection of my personal projects that I have created using R and pub
 
 My final project in my Baseball Statistics course was to create an "interesting" application. The idea that I developed with a partner was to predict the likelihood that an at-bat ends in a strikeout, walk, hit-by-pitch, single, double, triple, home run, or an out on a ball in play. To do this, we used an article on FanGraphs for inspiration, but we made all the calculations and performed all the checks ourselves. This app breaks down data from 2022-2024 into different groups depending on the rate of occurrence for each considered outcome, then it utilizes linear modeling to predict the likelihood of each outcome. I am still working on refining this application  to create a better model. The R-squared value for predicting each of the outcomes ranged from 0.83 to 0.97, with home runs being the lowest and triples being the highest. 
 
+[This is a link to a ~10 minute YouTube video of Matthew and I explaining how the app works and how it was designed](https://youtu.be/J6ACcIVyuhM?si=RlKZLdLvxxZ8owus)
+
 Below are many screenshots from different examples of the app calculating likelihoods:
 
 ![image](https://github.com/user-attachments/assets/8e5a6b21-a776-4929-90c8-4081b723b1cc)
@@ -29,7 +31,7 @@ Below are many screenshots from different examples of the app calculating likeli
 ### A Display of Standard Counting Statistics for Specific Player Seasons
 
 For this project, I set out to build an R Shiny application that would easily let me view statistics for any player within the Lahman database. A driving factor in this project was to simply learn how to build an R Shiny application. This project has multiple tabs allowing me to showcase information in both a graph and a table, and there is an "About" tab detailing the functionality of the app and giving any necessary credits to the inspirations that I took. In the "Graph" tab of the app, statistics are limited to one specific player for one specific season. However, when using the "Table" tab, there is a checkbox that is available on the main tab that will alter the results. When selected, the statistics for every player on the selected team for the selected season are displayed. When left unselected, every player from every season for the selected team will be displayed.
-[This is a link to a ~10 minute YouTube video of Matthew and I explaining how the app works and how it was designed](https://youtu.be/J6ACcIVyuhM?si=RlKZLdLvxxZ8owus)
+
 Below are screenshots of the app in use for you to view:
 
 ![image](https://github.com/user-attachments/assets/1108ef7e-ddae-4165-99f8-e7221156ac48)
