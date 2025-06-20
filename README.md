@@ -9,3 +9,12 @@ This is a collection of my personal projects that I have created using R and pub
 -[Predicting the Outcome of an At-Bat Based on a Specific Batter and Pitcher](#abs)
 
 -[A Display of a Specific Player's Rate Statistics Compared to League Average](#rate)
+
+#counting
+
+
+
+
+
+
+#rate
