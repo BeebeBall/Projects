@@ -8,7 +8,7 @@ This is a collection of my personal projects that I have created using R and pub
 
 -[Predicting the Outcome of an At-Bat Based on a Specific Batter and Pitcher](#predicting-the-outcome-of-an-at-bat-based-on-a-specific-batter-and-pitcher)
 
--[A Display of a Specific Player's Rate Statistics Compared to League Average](#a-display-of-a-specific-player's-rate-statistics-compared-to-league-average)
+-[A Display of a Specific Player's Rate Statistics Compared to League Average](#a-display-of-a-specific-players-rate-statistics-compared-to-league-average)
 
 
 ### A Display of Standard Counting Statistics for Specific Player Seasons
