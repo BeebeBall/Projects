@@ -17,6 +17,7 @@ My final project in my Baseball Statistics course was to create an "interesting"
 
 Below are many screenshots from different examples of the app calculating likelihoods:
 
+<img width="642" alt="image" src="https://github.com/user-attachments/assets/47197232-b83c-40cd-b532-d9c1a0856ad9" />
 
 ![]()
 
