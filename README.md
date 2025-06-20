@@ -24,33 +24,39 @@ Below are many screenshots from different examples of the app calculating likeli
 *Here we are predicting what would happen in a matchup between C.J. Abrams and Dustin May, all using their 2023 statistics*
 
 ![image](https://github.com/user-attachments/assets/96e7218e-1eee-4f09-abee-51a763387fd7)
-*Our "About" tab*
+*Our "About" Tab*
 
 ### A Display of Standard Counting Statistics for Specific Player Seasons
 
-For this project, I set out to build an R Shiny application that would easily let me view statistics for any player within the Lahman database. A driving factor in this project was to simply learn how to build an R Shiny application. This project has multiple tabs allowing me to showcase information in both a graph and a table, and there is an "About" tab detailing the functionality of the app and giving any necessary credits to the inspirations that I took. In the graph tab of the app, statistics are limited to one specific player for one specific season. However, when using the table tab, the statistics for every player on the selected team for the selected season are displayed. 
+For this project, I set out to build an R Shiny application that would easily let me view statistics for any player within the Lahman database. A driving factor in this project was to simply learn how to build an R Shiny application. This project has multiple tabs allowing me to showcase information in both a graph and a table, and there is an "About" tab detailing the functionality of the app and giving any necessary credits to the inspirations that I took. In the "Graph" tab of the app, statistics are limited to one specific player for one specific season. However, when using the "Table" tab, there is a checkbox that is available on the main tab that will alter the results. When selected, the statistics for every player on the selected team for the selected season are displayed. When left unselected, every player from every season for the selected team will be displayed.
 
 Below are screenshots of the app in use for you to view:
 
-![]()
+![image](https://github.com/user-attachments/assets/1108ef7e-ddae-4165-99f8-e7221156ac48)
+*Judge 2022 Graph*
 
-![]()
+![image](https://github.com/user-attachments/assets/f51230df-3cb8-4d60-89cf-4191b5e7c8bf)
+*2022 Yankees table (this continues in both width and length to include all players and each statistic)*
 
-![]()
+![image](https://github.com/user-attachments/assets/6dd39d4f-cdd4-4aee-84ed-d8a66a782737)
+*The "About" tab*
 
 
 ### A Display of a Specific Player's Rate Statistics Compared to League Average
-This application is the next phase of the application that displays counting statistics. I found that the graphs that were displayed can be a little misleading, as statistics like RBI can range well over 100, while triples are often less than 5. This application converts them all to rates as well as including traditional rate statistics (batting average, on-base percentage, slugging percentage, and on-base plus slugging). 
+This application is the next phase of the application that displays counting statistics. I found that the graphs that were displayed can be a little misleading, as statistics like RBI can range well over 100, while triples are often less than 5. This application compares traditional rate statistics (batting average, on-base percentage, slugging percentage, and on-base plus slugging) so that all statistics are on a reasonable scale. 
 
 This application displays a player's rate statistics on a graph and displays the league average of that statistic directly next to it. This allows an easy comparison as to whether or not the player was above or below league average. When using the table, I have included a scaled version of these statistics indicating how far above or below league average a player was (for reference, 1 is exactly league average, 1.2 is 20% above league average, and 0.8 is 20% below league average). 
 
 Below are screenshots of the application in use:
 
-![]()
+![image](https://github.com/user-attachments/assets/662cbd4f-3f3e-483f-a073-f921cb911eb9)
+*Shohei Ohtani in 2023 graph*
 
-![]()
+![image](https://github.com/user-attachments/assets/1d046de6-d934-43ab-8261-894b48c141d6)
+*Angels 2023 table (this continues in both width and length to include all players and each statistic)*
 
-![]()
+![image](https://github.com/user-attachments/assets/0fc8afd4-27e3-476d-9fac-77bc63ec6ce0)
+*The "About" tab*
 
 ### General Lab Assignments for a 400-Level Baseball Statistics Course
 
