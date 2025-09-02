@@ -52,9 +52,9 @@ x = pitchers %>%
             total_thrown = n()) %>% 
   ungroup() %>% 
   group_by(pitch_name) %>% 
-  mutate(spin_percentile = round((mean_spin/max(mean_spin)) * 100 ),
-         velo_percentile = round((mean_velo/max(mean_velo)) * 100),
-         extens_percentile = round((mean_extension/max(mean_extension)) * 100)) %>% 
+  mutate(spin_percentile = round((percent_rank(mean_spin)) * 100),
+         velo_percentile = round((percent_rank(mean_velo)) * 100),
+         extens_percentile = round((percent_rank(mean_extension)) * 100)) %>% 
   left_join(y) %>% 
   left_join(z) %>% 
   ungroup() %>% 
@@ -95,7 +95,7 @@ every_pitch = pitchers %>%
 library(shiny)
 
 ui <- navbarPage(
-  title = "Pitcher Spin Rate Percentile Rankings",
+  title = "Pitch Characteristics (2025 Season Through July)",
   
   tabPanel(
     title = "Player Averages",
