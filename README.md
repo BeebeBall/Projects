@@ -33,7 +33,10 @@ Below are many screenshots from different examples of the app calculating likeli
 
 ### Pitch Characteristics in the 2025 Season Through July
 
-Wanting to understand what makes certain pitches successful, I started to analyze Statcast data.
+Wanting to understand what makes certain pitches successful, I started to analyze Statcast data. To easily do this, I created a Shiny app that can sort by pitcher, or by specific pitch characteristics. Moving foward, I will be adding a third tab to this app that will model pitch effectiveness using spin, speed, break, and other measured characteristics.
+
+![image](<img width="959" height="349" alt="Pitch_App_Home" src="https://github.com/user-attachments/assets/bb7bb48e-895b-4adf-aed1-25aae52aa29f" />)
+
 
 
 ### A Display of Standard Counting Statistics for Specific Player Seasons
