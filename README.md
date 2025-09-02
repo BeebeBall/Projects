@@ -44,7 +44,7 @@ Below please find what each completed tab of this app looks like:
 *Here is the second tab that will sort pitches based on selected characterisitcs. The default sorting is done by pitch velocity.*
 
 ![image](https://github.com/user-attachments/assets/ee80117e-3376-4378-8238-83418d8a18b1)
-*Finally, this is the second tab but with some of the filters changed. Here we are displaying pitches by Devin Williams sorted by his extension on each pitch.
+*Finally, this is the second tab but with some of the filters changed. Here we are displaying pitches by Devin Williams sorted by his extension on each pitch.*
 
 
 ### A Display of Standard Counting Statistics for Specific Player Seasons
