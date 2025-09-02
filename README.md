@@ -35,7 +35,8 @@ Below are many screenshots from different examples of the app calculating likeli
 
 Wanting to understand what makes certain pitches successful, I started to analyze Statcast data. To easily do this, I created a Shiny app that can sort by pitcher, or by specific pitch characteristics. Moving foward, I will be adding a third tab to this app that will model pitch effectiveness using spin, speed, break, and other measured characteristics.
 
-![image](C:\Users\STP\Pictures\Screenshots\Pitch_App_Home.png)
+![image](https://github.com/user-attachments/assets/be712b3a-c682-45ba-8988-21d1d50b7402)
+
 
 
 
