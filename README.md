@@ -30,6 +30,12 @@ Below are many screenshots from different examples of the app calculating likeli
 ![image](https://github.com/user-attachments/assets/96e7218e-1eee-4f09-abee-51a763387fd7)
 *Our "About" Tab*
 
+
+### Pitch Characteristics in the 2025 Season Through July
+
+Wanting to understand what makes certain pitches successful, I started to analyze Statcast data.
+
+
 ### A Display of Standard Counting Statistics for Specific Player Seasons
 
 For this project, I set out to build an R Shiny application that would easily let me view statistics for any player within the Lahman database. A driving factor in this project was to simply learn how to build an R Shiny application. This project has multiple tabs allowing me to showcase information in both a graph and a table, and there is an "About" tab detailing the functionality of the app and giving any necessary credits to the inspirations that I took. In the "Graph" tab of the app, statistics are limited to one specific player for one specific season. However, when using the "Table" tab, there is a checkbox that is available on the main tab that will alter the results. When selected, the statistics for every player on the selected team for the selected season are displayed. When left unselected, every player from every season for the selected team will be displayed.
