@@ -4,7 +4,7 @@ This is a collection of my personal projects that I have created using R and pub
 ## Table of Contents
 -[Predicting the Outcome of an At-Bat Based on a Specific Batter and Pitcher](#predicting-the-outcome-of-an-at-bat-based-on-a-specific-batter-and-pitcher)
 
--[Pitch Characteristics in the 2025 Season Through July(#pitch-characteristics-in-the-2025-season-through-july)]
+-[Pitch Characteristics in the 2025 Season Through July](#pitch-characteristics-in-the-2025-season-through-july)
 
 -[A Display of Standard Counting Statistics for Specific Player Seasons](#a-display-of-standard-counting-statistics-for-specific-player-seasons)
 
