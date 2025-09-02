@@ -25,7 +25,7 @@ Below are many screenshots from different examples of the app calculating likeli
 *This image displays our prediction of what would happen if Bobby Witt Jr. (in 2022) met Luis Gil (in 2024).*
 
 ![image](https://github.com/user-attachments/assets/412e524a-088e-4856-8fa5-647ea5e4a44e)
-*Here we are predicting what would happen in a matchup between C.J. Abrams and Dustin May, all using their 2023 statistics*
+*Here we are predicting what would happen in a matchup between C.J. Abrams and Dustin May, all using their 2023 statistics.*
 
 ![image](https://github.com/user-attachments/assets/96e7218e-1eee-4f09-abee-51a763387fd7)
 *Our "About" Tab*
@@ -35,9 +35,16 @@ Below are many screenshots from different examples of the app calculating likeli
 
 Wanting to understand what makes certain pitches successful, I started to analyze Statcast data. To easily do this, I created a Shiny app that can sort by pitcher, or by specific pitch characteristics. Moving foward, I will be adding a third tab to this app that will model pitch effectiveness using spin, speed, break, and other measured characteristics.
 
+Below please find what each completed tab of this app looks like:
+
 ![image](https://github.com/user-attachments/assets/be712b3a-c682-45ba-8988-21d1d50b7402)
+*This is the app's default page when opened up (changed to display Paul Skenes here).*
 
+![image](https://github.com/user-attachments/assets/45e9b392-0c28-49e2-ab17-170078755642)
+*Here is the second tab that will sort pitches based on selected characterisitcs. The default sorting is done by pitch velocity.*
 
+![image](https://github.com/user-attachments/assets/ee80117e-3376-4378-8238-83418d8a18b1)
+*Finally, this is the second tab but with some of the filters changed. Here we are displaying pitches by Devin Williams sorted by his extension on each pitch.
 
 
 ### A Display of Standard Counting Statistics for Specific Player Seasons
