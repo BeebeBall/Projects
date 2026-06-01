@@ -44,7 +44,7 @@ There is a tab for the draft board that can be filtered by position and/or playe
 
 There is an overall best available tab divided into pitchers and hitters sorted by a metric I calculated called Value Over Replacement Player, or VORP. VORP is calculated based on the difference of a specific player's total season point projection and the projection of the xth best at his position depending on how many total players at that position can start in this league. For example, there are 8 teams in this league and one shortstop can start per team, so the VORP for a shortstop would be that player's projection subtracted by the 8th highest shortstop projection. There are also tabs for the value of a player compared to the next best player at his position, VONP, and the value of that player over the average of the next three players at that position, VON3P. Also listed on this tab are a few statistics that I look to to round out my roster overall.
 
-![image](https://github.com/user-attachments/assets/730f9c99-7044-4e7e-85af-6006302480e3)
+![image](https://github.com/user-attachments/assets/ecbad333-83e3-4999-ae21-891e965a25f8)
 
 The positional scarcity tab aims to show where there are shortages of good players per position. It was created by taking the average VORP for each position and multiplying it by -1 to create a more intuitive visual aid. The higher the graph, the more value there is in that position over the rest.
 
