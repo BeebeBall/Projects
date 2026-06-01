@@ -53,7 +53,7 @@ The positional scarcity tab aims to show where there are shortages of good playe
 Each team has its own tab to keep track of rosters as the draft goes on. Users can search for a player, select that player, and watch as the rest of the app updates so that player is no longer considered as part of the draft pool. At the bottom of each team's current roster are tallies for each team to that point. I have total score and VORP as the tracked scores with a ranking next to it as it relates to every team in the league to that point. 
 
 ![image](https://github.com/user-attachments/assets/5dbecc36-b258-42a2-a2fc-632e8bcc8c85)
-![image](https://github.com/user-attachments/assets/101377f7-163e-4aad-8e70-144dd7759885)
+![image](https://github.com/user-attachments/assets/b6be54ce-1ac7-4cf7-b26c-946683f4258f)
 
 Using this app, I completed a draft in late March of 2026 to which I had the second highest projected score overall. I will update this as the season continues to utilize results. Of note, rosters do not stay the same as the season evolves, and this app does not evaluate trades nor waiver wire pickups, but could be updated with projections for the remainder of the season to do so.
 
