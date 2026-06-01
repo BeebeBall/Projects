@@ -38,7 +38,7 @@ Often times, I find myself frustrated with the season-long fantasy projections o
 
 For the app's interface, I created a tab for each of the 8 teams in the league I created this for, and assigned roster spots according to that league's settings. 
 
-![image]("https://github.com/user-attachments/assets/30e26e8a-feac-4872-b239-9120a183f82a)
+![image](https://github.com/user-attachments/assets/30e26e8a-feac-4872-b239-9120a183f82a)
 
 There is a tab for the draft board that can be filtered by position and/or player name. 
 
