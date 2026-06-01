@@ -6,6 +6,8 @@ This is a collection of my personal projects that I have created using R and pub
 
 -[Pitch Characteristics in the 2025 Season Through July](#pitch-characteristics-in-the-2025-season-through-july)
 
+-[Fantasy Baseball Draft Tool](#fantasy-baseball-draft-tool)
+
 -[A Display of Standard Counting Statistics for Specific Player Seasons](#a-display-of-standard-counting-statistics-for-specific-player-seasons)
 
 -[A Display of a Specific Player's Rate Statistics Compared to League Average](#a-display-of-a-specific-players-rate-statistics-compared-to-league-average)
@@ -29,6 +31,22 @@ Below are many screenshots from different examples of the app calculating likeli
 
 ![image](https://github.com/user-attachments/assets/96e7218e-1eee-4f09-abee-51a763387fd7)
 *Our "About" Tab*
+
+### Fantasy Baseball Draft Tool
+
+Often times, I find myself frustrated with the season-long fantasy projections on draft day from each platform. I set out to create a tool that combines many different projection systems and assigns a season-long fantasy point value on each player for the 2026 season. To do this, I utilized a few different data sources. I pulled the projections for batters and pitchers from FanGraphs for ATC, The Bat, The BatX, Steamer, OOPSY, and ZiPS. I then utilized whiffs.org to provide historical context for how accurate this projection systems are. I combined the RMSE for each projection system to create a weighted average of every projection system based on their effectiveness. I used this to combine each projection for each player and assigned fantasy points based on outcome for the league I was using this for.
+
+For the app's interface, I created a tab for each of the 8 teams in the league I created this for, and assigned roster spots according to that league's settings. 
+
+There is a tab for the draft board that can be filtered by position and/or player name. 
+
+There is an overall best available tab divided into pitchers and hitters sorted by a metric I calculated called Value Over Replacement Player, or VORP. VORP is calculated based on the difference of a specific player's total season point projection and the projection of the xth best at his position depending on how many total players at that position can start in this league. For example, there are 8 teams in this league and one shortstop can start per team, so the VORP for a shortstop would be that player's projection subtracted by the 8th highest shortstop projection. There are also tabs for the value of a player compared to the next best player at his position, VONP, and the value of that player over the average of the next three players at that position, VON3P. Also listed on this tab are a few statistics that I look to to round out my roster overall.
+
+The positional scarcity tab aims to show where there are shortages of good players per position. It was created by taking the average VORP for each position and multiplying it by -1 to create a more intuitive visual aid. The higher the graph, the more value there is in that position over the rest.
+
+Each team has its own tab to keep track of rosters as the draft goes on. Users can search for a player, select that player, and watch as the rest of the app updates so that player is no longer considered as part of the draft pool. At the bottom of each team's current roster are tallies for each team to that point. I have total score and VORP as the tracked scores with a ranking next to it as it relates to every team in the league to that point. 
+
+Using this app, I completed a draft in late March of 2026 to which I had the second highest projected score overall. I will update this as the season continues to utilize results. Of note, rosters do not stay the same as the season evolves, and this app does not evaluate trades nor waiver wire pickups, but could be updated with projections for the remainder of the season to do so.
 
 
 ### Pitch Characteristics in the 2025 Season Through July
