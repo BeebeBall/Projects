@@ -37,6 +37,8 @@ Below are many screenshots from different examples of the app calculating likeli
 Often times, I find myself frustrated with the season-long fantasy projections on draft day from each platform. I set out to create a tool that combines many different projection systems and assigns a season-long fantasy point value on each player for the 2026 season. To do this, I utilized a few different data sources. I pulled the projections for batters and pitchers from FanGraphs for ATC, The Bat, The BatX, Steamer, OOPSY, and ZiPS. I then utilized whiffs.org to provide historical context for how accurate this projection systems are. I combined the RMSE for each projection system to create a weighted average of every projection system based on their effectiveness. I used this to combine each projection for each player and assigned fantasy points based on outcome for the league I was using this for.
 
 For the app's interface, I created a tab for each of the 8 teams in the league I created this for, and assigned roster spots according to that league's settings. 
+![image](<img width="751" height="718" alt="Screenshot 2026-06-01 at 3 58 10 PM" src="https://github.com/user-attachments/assets/66bbe777-73e6-498d-8678-501565ec6f47" />
+)
 
 There is a tab for the draft board that can be filtered by position and/or player name. 
 
