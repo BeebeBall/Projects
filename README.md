@@ -48,7 +48,7 @@ There is an overall best available tab divided into pitchers and hitters sorted 
 
 The positional scarcity tab aims to show where there are shortages of good players per position. It was created by taking the average VORP for each position and multiplying it by -1 to create a more intuitive visual aid. The higher the graph, the more value there is in that position over the rest.
 
-![image](https://github.com/user-attachments/assets/e5b1ea6f-8688-4234-a7b5-e41b8faff707)
+![image](https://github.com/user-attachments/assets/8e61f866-0e0d-4570-99a4-6432448ac252)
 
 Each team has its own tab to keep track of rosters as the draft goes on. Users can search for a player, select that player, and watch as the rest of the app updates so that player is no longer considered as part of the draft pool. At the bottom of each team's current roster are tallies for each team to that point. I have total score and VORP as the tracked scores with a ranking next to it as it relates to every team in the league to that point. 
 
